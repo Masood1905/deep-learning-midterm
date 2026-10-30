@@ -1,0 +1,7 @@
+# datasets are not uploaded (too big), download them from kaggle
+*.csv
+chest_xray/
+*.zip
+
+.ipynb_checkpoints/
+__pycache__/
