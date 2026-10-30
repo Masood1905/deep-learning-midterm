@@ -5,7 +5,7 @@ Two deep learning models built with TensorFlow/Keras:
 1. **DNN** - predicts whether a telecom customer will churn (leave the company) from their account and billing data.
 2. **CNN** - classifies chest X-ray images as **Normal** or **Pneumonia**.
 
-The full write-up (problem definition, preprocessing, architecture, results and conclusions) is in `Project_Report.pdf`.
+The full write-up (problem definition, preprocessing, architecture, results and conclusions) is in `REPORT.md`. All graphs are shown inside the two notebooks.
 
 ## Results
 
@@ -21,7 +21,9 @@ The full write-up (problem definition, preprocessing, architecture, results and 
 | `churn_dnn.ipynb` | DNN for customer churn prediction |
 | `pneumonia_cnn.ipynb` | CNN for pneumonia detection |
 | `best_cnn.keras` | Trained CNN (best epoch, saved by ModelCheckpoint) |
-| `Project_Report.pdf` | Project report |
+| `churn_model.joblib` | Trained DNN with its scaler and column info (joblib) |
+| `pneumonia_model.joblib` | Trained CNN (joblib) |
+| `REPORT.md` | Project report |
 | `requirements.txt` | Python libraries needed |
 
 ## Datasets
@@ -44,6 +46,19 @@ The datasets are not included in this repo because of their size. Download them 
 4. Open the notebooks in Jupyter and run all cells.
 
 The churn notebook trains in about a minute. The CNN took about 15 minutes per epoch on a laptop CPU (8 epochs, around 2 hours), so a GPU (e.g. Kaggle or Google Colab) is recommended. To test the CNN without retraining, skip the training cell and load `best_cnn.keras` (the notebook already has a cell for this).
+
+## Inference
+
+Both notebooks end with an inference step (section 8) that loads the saved `.joblib` model and predicts on new inputs:
+
+```python
+import joblib
+churn = joblib.load('churn_model.joblib')        # dict with model, scaler and column info
+cnn = joblib.load('pneumonia_model.joblib')      # Keras model
+```
+
+- Churn: `predict_churn(customer_dict, churn)` returns `CHURN` or `STAY` with the churn probability.
+- Pneumonia: `predict_xray(image_path, cnn)` returns `NORMAL` or `PNEUMONIA` with the probability.
 
 ## Tools
 
