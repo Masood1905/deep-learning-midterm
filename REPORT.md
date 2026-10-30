@@ -101,6 +101,10 @@ The DNN reached **79.7% test accuracy** and a ROC-AUC of **0.837**, improving on
 
 The model's weak point is recall for the churn class: it finds about half of the customers who leave. An earlier experiment with class weights raised churn recall but lowered accuracy to about 76%, so the final model was trained without them. If catching churners matters most to the company, class weights or a lower decision threshold (for example 0.3) would be a reasonable choice. Further improvements could come from tuning the threshold on the validation set, adding features such as average charge per month of tenure, and comparing against logistic regression or gradient boosting.
 
+### 1.8 Saving the Model and Inference
+
+The trained DNN was saved as `churn_model.joblib`. Along with the model, the file stores the fitted StandardScaler, the yes/no mappings, the one-hot column names and the list of 30 feature columns, because a new customer must be preprocessed exactly like the training data. The inference step loads this file, converts a new customer's details (a Python dictionary with the 19 original fields) into the same 30 scaled features, and returns `CHURN` or `STAY` with the churn probability. It was tested on two made-up customers: a new month-to-month fiber customer with high charges, and a long-term two-year contract customer.
+
 ---
 
 ## Part 2: CNN Model - Pneumonia Detection from Chest X-Rays
@@ -193,6 +197,10 @@ There is a large gap between validation accuracy (96.1%) and test accuracy (71.6
 
 Training was also limited by the hardware: on a laptop CPU only 8 epochs were possible, and the unstable validation curves show that training had not settled, likely because the Batch Normalization statistics had not stabilised and the learning rate of 0.001 was fairly high. Results could be improved by training for longer on a GPU with a lower learning rate, splitting training and validation by patient instead of by image, and using transfer learning from a pretrained network such as ResNet50 or EfficientNet.
 
+### 2.8 Saving the Model and Inference
+
+The best CNN (epoch 7) was saved as `pneumonia_model.joblib`. The inference step loads it, applies the same preprocessing as training to a single X-ray (grayscale, resized to 180 x 180, pixel values divided by 255), and returns `NORMAL` or `PNEUMONIA` with the predicted probability. It was demonstrated on one normal and one pneumonia image from the test folder.
+
 ---
 
 ## Overall Conclusion
@@ -206,4 +214,6 @@ This project applied two types of deep learning model to two real-world problems
 | `churn_dnn.ipynb` | DNN for customer churn prediction (Part 1) |
 | `pneumonia_cnn.ipynb` | CNN for pneumonia detection (Part 2) |
 | `best_cnn.keras` | Trained CNN model (best epoch) |
+| `churn_model.joblib` | Saved DNN with scaler and column info, used for inference |
+| `pneumonia_model.joblib` | Saved CNN, used for inference |
 | `requirements.txt` | Python libraries needed to run the notebooks |
